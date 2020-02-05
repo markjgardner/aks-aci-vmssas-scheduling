@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scaler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scaler
+  template:
+    metadata:
+      labels:
+        app: scaler
+    spec:
+      priorityClassName: lowest-priority # always get preempted
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: type
+                operator: NotIn
+                values:
+                - virtual-kubelet
+      containers:
+        - image: "nginx"
+          imagePullPolicy: IfNotPresent
+          name: scaler
+          resources:
+            requests: # ask for a whole node
+              cpu: 1000m

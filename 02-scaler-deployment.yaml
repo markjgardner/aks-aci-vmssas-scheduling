@@ -28,4 +28,4 @@ spec:
           name: scaler
           resources:
             requests: # ask for a whole node
-              cpu: 1000m
+              cpu: 1500m

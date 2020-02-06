@@ -1,0 +1,28 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: descheduler-job
+  namespace: kube-system
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          name: descheduler-pod
+        spec:
+          priorityClassName: system-cluster-critical
+          containers:
+            - name: descheduler
+              image: bennu/descheduler:0.9.0-72-gd9a77393
+              imagePullPolicy: IfNotPresent
+              volumeMounts:
+                - mountPath: /policy-dir
+                  name: policy-volume
+              command: ["/bin/descheduler",  "--policy-config-file", "/policy-dir/descheduler-policy.yaml", "-v", "1"]
+          restartPolicy: OnFailure
+          serviceAccountName: descheduler-sa
+          volumes:
+            - name: policy-volume
+              configMap:
+                name: descheduler-policy-configmap

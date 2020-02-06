@@ -16,13 +16,13 @@ spec:
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-            - preference:
+            - weight: 100
+              preference:
                 matchExpressions:
-                  - key: type
-                    operator: NotIn
+                  - key: kubernetes.io/hostname
+                    operator: In
                     values:
-                      - virtual-kubelet
-              weight: 100
+                      - aks-nodepool1-65804570-vmss000000
       containers:
         - image: "nginx"
           imagePullPolicy: IfNotPresent
@@ -33,27 +33,3 @@ spec:
             requests:
               cpu: 250m
               memory: 64Mi
-            limits:
-              cpu: 1000m
-              memory: 256Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: myapp
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-  selector:
-    app: myapp
----
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: myapp-pdb
-spec:
-  minAvailable: 1
-  selector:
-    matchLabels:
-      app: myapp

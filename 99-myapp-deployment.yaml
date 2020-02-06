@@ -19,10 +19,10 @@ spec:
             - weight: 100
               preference:
                 matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
+                  - key: type
+                    operator: NotIn
                     values:
-                      - aks-nodepool1-65804570-vmss000000
+                      - virtual-kubelet
       containers:
         - image: "nginx"
           imagePullPolicy: IfNotPresent

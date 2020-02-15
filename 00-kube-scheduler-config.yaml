@@ -1,0 +1,7 @@
+apiVersion: kubescheduler.config.k8s.io/v1alpha1
+kind: KubeSchedulerConfiguration
+algorithmSource:
+  policy: 
+    configMap:
+      namespace: kube-system
+      name: my-custom-scheduler-policy
